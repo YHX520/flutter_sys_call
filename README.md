@@ -1,7 +1,7 @@
 # flutter_sys_call .  
-[![pub package](https://img.shields.io/pub/v/flutter_luban.svg)](https://pub.flutter-io.cn/packages/flutter_sys_call)
+[pub package](https://pub.flutter-io.cn/packages/flutter_sys_call)
 
-A new Flutter plugin.
+系统调用小插件
 
 ## Getting Started
 
