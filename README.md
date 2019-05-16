@@ -21,8 +21,8 @@ samples, guidance on mobile development, and a full API reference.
 
 #使用方式
 
-Android：加入权限 <uses-permission android:name="android.permission.VIBRATE"/>
- 
+Android需要加入震动权限:
+"<uses-permission android:name="android.permission.VIBRATE"/>"
  
 导入：import 'package:flutter_sys_call/flutter_sys_call.dart';
 
