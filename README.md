@@ -1,4 +1,5 @@
-# flutter_sys_call
+# flutter_sys_call .  
+[![pub package](https://img.shields.io/pub/v/flutter_luban.svg)](https://pub.flutter-io.cn/packages/flutter_sys_call)
 
 A new Flutter plugin.
 
