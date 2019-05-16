@@ -19,21 +19,14 @@ samples, guidance on mobile development, and a full API reference.
 
 # flutter_sys_call
 
-使用方式
+#使用方式
 
-Android
-
-别忘了加入权限：
-
- <uses-permission android:name="android.permission.VIBRATE"/>
+Android：加入权限 <uses-permission android:name="android.permission.VIBRATE"/>
  
  
+导入：import 'package:flutter_sys_call/flutter_sys_call.dart';
 
-导入：
-
-import 'package:flutter_sys_call/flutter_sys_call.dart';
-
- FlutterSysCall.doVibrator;
+使用震动 FlutterSysCall.doVibrator;
 
 
 
