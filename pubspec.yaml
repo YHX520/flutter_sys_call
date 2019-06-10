@@ -1,8 +1,8 @@
 name: flutter_sys_call
-description: A new Flutter plugin.
-version: 0.0.1
+description: 一个用来调用系统小功能的插件.
+version: 0.0.5
 author: "yhx <646903573@qq.com>"
-homepage: "https://github.com/YHX520"
+homepage: "https://github.com/YHX520/flutter_sys_call"
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  permission_handler: '^3.1.0'
 
 dev_dependencies:
   flutter_test:

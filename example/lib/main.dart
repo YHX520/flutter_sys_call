@@ -48,14 +48,46 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: RaisedButton(
-            onPressed: () {
-              FlutterSysCall.doVibrator;
-            },
-            child: Text("震动"),
-          ),
-        ),
+            child: Column(
+          children: <Widget>[
+            RaisedButton(
+              onPressed: () {
+                doVibrator();
+              },
+              child: Text("震动"),
+            ),
+            RaisedButton(
+              onPressed: () {
+                takePhotoOrVideo();
+              },
+              child: Text("拍视频"),
+            ),
+            RaisedButton(
+              onPressed: () {
+                qrScan();
+              },
+              child: Text("扫描二维码"),
+            ),
+          ],
+        )),
       ),
     );
+  }
+
+  ///调用震动
+  doVibrator() async {
+    await FlutterSysCall.doVibrator;
+  }
+
+  ///调用视频录像
+  takePhotoOrVideo() async {
+    String path = await FlutterSysCall.doTakeVideo;
+    print(path);
+  }
+
+  ///调用二维码扫一扫
+  qrScan() async {
+    String result = await FlutterSysCall.qrScan;
+    print(result);
   }
 }
