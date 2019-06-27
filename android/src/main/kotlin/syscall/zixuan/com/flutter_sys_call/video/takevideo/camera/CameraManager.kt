@@ -32,7 +32,7 @@ class CameraManager private constructor(private val context: Application) {
      * 相机闪光状态
      */
     var cameraFlash: Int = 0
-        private set
+
     /**
      * 前后置状态
      */
@@ -41,7 +41,11 @@ class CameraManager private constructor(private val context: Application) {
      * 是否支持前置摄像,是否支持闪光
      */
     val isSupportFrontCamera: Boolean
+
     val isSupportFlashCamera: Boolean
+
+    ///是否已经拍摄到相应的照片或视频
+    var isTakePhotoOrVideo = false;
     /**
      * 录制视频的相关参数
      */
@@ -58,6 +62,7 @@ class CameraManager private constructor(private val context: Application) {
         isSupportFrontCamera = CameraUtils.isSupportFrontCamera
         isSupportFlashCamera = CameraUtils.isSupportFlashCamera(context)
         if (isSupportFrontCamera) {
+
             cameraFacing = CameraUtils.getCameraFacing(context, Camera.CameraInfo.CAMERA_FACING_BACK)
         }
         if (isSupportFlashCamera) {
@@ -312,7 +317,9 @@ class CameraManager private constructor(private val context: Application) {
     fun takePhoto(callback: Camera.PictureCallback) {
         if (mCamera != null) {
             try {
+                isTakePhotoOrVideo = true;
                 mCamera!!.takePicture(null, null, callback)
+
             } catch (e: Exception) {
                 Toast.makeText(context, "拍摄失败", Toast.LENGTH_SHORT).show()
             }
@@ -325,6 +332,7 @@ class CameraManager private constructor(private val context: Application) {
      * 开始录制视频
      */
     fun startMediaRecord(savePath: String) {
+
         if (mCamera == null || mProfile == null) return
         mCamera!!.unlock()
         if (mMediaRecorder == null) {
@@ -375,6 +383,7 @@ class CameraManager private constructor(private val context: Application) {
     }
 
     private fun stopRecorder() {
+        isTakePhotoOrVideo=true;
         if (mMediaRecorder != null) {
             try {
                 mMediaRecorder!!.stop()

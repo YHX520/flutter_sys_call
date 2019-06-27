@@ -57,6 +57,14 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
     private var iv_choice: ImageView? = null
     private var iv_facing: ImageView? = null
     /**
+     * 是否在录制
+     */
+    private var isRealRecord = false;
+    /**
+     * 是否选择了前置摄像头
+     */
+    private var isFont = false;
+    /**
      * 闪光
      */
     private var tv_flash: TextView? = null
@@ -137,23 +145,23 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Subscriber<Boolean>() {
-                override fun onCompleted() {
+                .subscribe(object : Subscriber<Boolean>() {
+                    override fun onCompleted() {
 
-                }
-
-                override fun onError(e: Throwable) {
-
-                }
-
-                override fun onNext(aBoolean: Boolean?) {
-                    if (aBoolean != null && aBoolean) {
-                        iv_choice!!.visibility = View.VISIBLE
-                    } else {
-                        setTakeButtonShow(true)
                     }
-                }
-            })
+
+                    override fun onError(e: Throwable) {
+
+                    }
+
+                    override fun onNext(aBoolean: Boolean?) {
+                        if (aBoolean != null && aBoolean) {
+                            iv_choice!!.visibility = View.VISIBLE
+                        } else {
+                            setTakeButtonShow(true)
+                        }
+                    }
+                })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -186,13 +194,13 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
         playerManager = MediaPlayerManager.getInstance(application)
         cameraManager!!.setCameraType(if (isSupportRecord) 1 else 0)
 
-       // tv_flash!!.visibility = if (cameraManager!!.isSupportFlashCamera) View.VISIBLE else View.GONE
-       // setCameraFlashState()
-       // iv_facing!!.visibility = if (cameraManager!!.isSupportFrontCamera) View.VISIBLE else View.GONE
+        // tv_flash!!.visibility = if (cameraManager!!.isSupportFlashCamera) View.VISIBLE else View.GONE
+        // setCameraFlashState()
+        // iv_facing!!.visibility = if (cameraManager!!.isSupportFrontCamera) View.VISIBLE else View.GONE
         //rl_camera!!.visibility = if (cameraManager!!.isSupportFlashCamera || cameraManager!!.isSupportFrontCamera)
-       //     View.VISIBLE
-       // else
-       //     View.GONE
+        //     View.VISIBLE
+        // else
+        //     View.GONE
 
         val max = MAX_RECORD_TIME / PLUSH_PROGRESS
         mProgressbar!!.setMaxProgress(max)
@@ -213,19 +221,19 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
                 isRecording = true
                 progressSubscription =
                         Observable.interval(100, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).take(max)
-                            .subscribe(object : Subscriber<Long>() {
-                                override fun onCompleted() {
-                                    stopRecorder(true)
-                                }
+                                .subscribe(object : Subscriber<Long>() {
+                                    override fun onCompleted() {
+                                        stopRecorder(true)
+                                    }
 
-                                override fun onError(e: Throwable) {
+                                    override fun onError(e: Throwable) {
 
-                                }
+                                    }
 
-                                override fun onNext(aLong: Long?) {
-                                    mProgressbar!!.setProgress(mProgressbar!!.getProgress() + 1)
-                                }
-                            })
+                                    override fun onNext(aLong: Long?) {
+                                        mProgressbar!!.setProgress(mProgressbar!!.getProgress() + 1)
+                                    }
+                                })
             }
 
             override fun onZoom(zoom: Boolean) {
@@ -249,8 +257,15 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
         })
 
         mCameraView!!.setOnViewTouchListener(object : CameraView.OnViewTouchListener {
+
             override fun handleFocus(x: Float, y: Float) {
-                cameraManager!!.handleFocusMetering(x, y)
+                if (!isPhotoTakingState) {
+                    if (!cameraManager!!.isTakePhotoOrVideo) {
+                        cameraManager!!.handleFocusMetering(x, y)
+                    }
+
+                }
+
             }
 
             override fun handleZoom(zoom: Boolean) {
@@ -306,6 +321,8 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
      * 停止拍摄
      */
     private fun stopRecorder(play: Boolean) {
+
+        cameraManager!!.isTakePhotoOrVideo = false;
         isRecording = false
         cameraManager!!.stopMediaRecord()
         recordSecond = mProgressbar!!.getProgress() * PLUSH_PROGRESS//录制多少毫秒
@@ -337,8 +354,8 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
                 iv_choice!!.visibility = View.GONE
                 setTakeButtonShow(true)
                 cameraManager!!.openCamera(
-                    this, mTextureView!!.surfaceTexture,
-                    mTextureView!!.width, mTextureView!!.height
+                        this, mTextureView!!.surfaceTexture,
+                        mTextureView!!.width, mTextureView!!.height
                 )
             }
         } else {
@@ -369,7 +386,9 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View) {
         when (v.id) {
             R.id.iv_close -> {
+                cameraManager!!.isTakePhotoOrVideo = false;
                 mTv_tack!!.visibility = View.VISIBLE
+
                 if (recorderPath != null) {//有拍摄好的正在播放,重新拍摄
                     FileUtils.delteFiles(File(recorderPath))
                     recorderPath = null
@@ -378,10 +397,10 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
                     setTakeButtonShow(true)
                     iv_choice!!.visibility = View.GONE
                     cameraManager!!.openCamera(
-                        this,
-                        mTextureView!!.surfaceTexture,
-                        mTextureView!!.width,
-                        mTextureView!!.height
+                            this,
+                            mTextureView!!.surfaceTexture,
+                            mTextureView!!.width,
+                            mTextureView!!.height
                     )
                 } else if (isPhotoTakingState) {
                     isPhotoTakingState = false
@@ -407,14 +426,14 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener {
             }
             R.id.tv_flash -> {
                 cameraManager!!.changeCameraFlash(
-                    mTextureView!!.surfaceTexture,
-                    mTextureView!!.width, mTextureView!!.height
+                        mTextureView!!.surfaceTexture,
+                        mTextureView!!.width, mTextureView!!.height
                 )
                 setCameraFlashState()
             }
             R.id.iv_facing -> cameraManager!!.changeCameraFacing(
-                this, mTextureView!!.surfaceTexture,
-                mTextureView!!.width, mTextureView!!.height
+                    this, mTextureView!!.surfaceTexture,
+                    mTextureView!!.width, mTextureView!!.height
             )
         }
     }

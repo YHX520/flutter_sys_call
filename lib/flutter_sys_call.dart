@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 
 import 'package:permission_handler/permission_handler.dart';
+import 'package:path_provider/path_provider.dart';
 
 class FlutterSysCall {
   static const MethodChannel _channel = const MethodChannel('flutter_sys_call');
@@ -17,19 +18,41 @@ class FlutterSysCall {
     return result;
   }
 
-  static Future<String> get doTakeVideo async {
+  static Future<Map<String, String>> get doTakeVideo async {
     bool isPermission = await requestPermission(Platform.isAndroid
         ? [
             PermissionGroup.camera,
             PermissionGroup.microphone,
             PermissionGroup.storage
           ]
-        : [PermissionGroup.camera, PermissionGroup.microphone]);
+        : [
+            PermissionGroup.camera,
+            PermissionGroup.microphone,
+            PermissionGroup.photos
+          ]);
     if (isPermission) {
-      final String result = await _channel.invokeMethod('recordVideo');
-      return result;
+      String result = await _channel.invokeMethod('recordVideo');
+
+      String path = (await getApplicationDocumentsDirectory()).path;
+      String fileEnd = result.substring(result.length - 3, result.length);
+      print(fileEnd);
+      String fileType;
+
+      if (fileEnd == "jpg" || fileEnd == "png") {
+        if (Platform.isIOS) {
+          result = (await File(result).rename(path + "/temp." + fileEnd)).path;
+        }
+        fileType = "image";
+      } else {
+        if (Platform.isIOS) {
+          result = (await File(result).rename(path + "/temp." + fileEnd)).path;
+        }
+        fileType = "video";
+      }
+
+      return {"fileType": fileType, "filePath": result};
     } else {
-      return "0";
+      return {"fileType": "", "filePath": ""};
     }
   }
 

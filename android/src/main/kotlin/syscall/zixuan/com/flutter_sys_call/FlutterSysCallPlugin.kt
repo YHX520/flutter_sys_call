@@ -25,7 +25,7 @@ import com.yzq.zxinglibrary.common.Constant
 
 class FlutterSysCallPlugin(newActivity: Activity) : MethodCallHandler, PluginRegistry.ActivityResultListener, PluginRegistry.RequestPermissionsResultListener {
 
-    var SCAN_CODE=300;
+    var SCAN_CODE = 300;
 
 
     var activity: Activity? = null;
@@ -129,26 +129,25 @@ class FlutterSysCallPlugin(newActivity: Activity) : MethodCallHandler, PluginReg
     ///Activity回调
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
 
-        System.out.println("返回码" + resultCode + "请求码"+requestCode)
+        System.out.println("返回码" + resultCode + "请求码" + requestCode)
 
 
-            if (data != null) {
-                 print(requestCode);
-                if (resultCode == RequestCode.TAKE_PHOTO) {
-                    ///拍图片
-                    ///返回图片路径
-                    result!!.success(data.getStringExtra("photo"))
+        if (data != null) {
+            print(requestCode);
+            if (resultCode == RequestCode.TAKE_PHOTO) {
+                ///拍图片
+                ///返回图片路径
+                result!!.success(data.getStringExtra("photo"))
 
-                } else if (resultCode == RequestCode.TAKE_VIDEO) {
-                    ///拍视频
-                    ///返回视屏路径
-                    result!!.success(data.getStringExtra("video"))
-                }else if(requestCode==SCAN_CODE){
-                    result!!.success(data.getStringExtra(Constant.CODED_CONTENT))
-                }
-            } else {
-                result!!.success("");
+            } else if (resultCode == RequestCode.TAKE_VIDEO) {
+                ///拍视频
+                ///返回视屏路径
+                result!!.success(data.getStringExtra("video"))
+            } else if (requestCode == SCAN_CODE) {
+                result!!.success(data.getStringExtra(Constant.CODED_CONTENT))
             }
+        }
+
 
         return false;
     }

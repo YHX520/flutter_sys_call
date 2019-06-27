@@ -3,6 +3,8 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_sys_call/flutter_sys_call.dart';
+import 'main_page.dart';
+import 'preview_video_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -42,52 +44,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-            child: Column(
-          children: <Widget>[
-            RaisedButton(
-              onPressed: () {
-                doVibrator();
-              },
-              child: Text("震动"),
-            ),
-            RaisedButton(
-              onPressed: () {
-                takePhotoOrVideo();
-              },
-              child: Text("拍视频"),
-            ),
-            RaisedButton(
-              onPressed: () {
-                qrScan();
-              },
-              child: Text("扫描二维码"),
-            ),
-          ],
-        )),
-      ),
-    );
-  }
-
-  ///调用震动
-  doVibrator() async {
-    await FlutterSysCall.doVibrator;
-  }
-
-  ///调用视频录像
-  takePhotoOrVideo() async {
-    String path = await FlutterSysCall.doTakeVideo;
-    print(path);
-  }
-
-  ///调用二维码扫一扫
-  qrScan() async {
-    String result = await FlutterSysCall.qrScan;
-    print(result);
+    return MaterialApp(home: MainPage());
   }
 }

@@ -1,6 +1,6 @@
 name: flutter_sys_call
-description: 一个用来调用系统小功能的插件.
-version: 0.0.5
+description: 一个用来调用系统小功能的插件，目前包括震动，视频录制，二维码识别
+version: 0.0.14
 author: "yhx <646903573@qq.com>"
 homepage: "https://github.com/YHX520/flutter_sys_call"
 
@@ -11,6 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
   permission_handler: '^3.1.0'
+  video_player: ^0.10.1
+  path_provider: ^0.5.0+1
 
 dev_dependencies:
   flutter_test:

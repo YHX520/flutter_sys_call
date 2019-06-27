@@ -161,7 +161,7 @@ class QQScanViewController: LBXScanViewController {
     }
     
     @objc func myCode() {
-        qbCode!("0")
+        qbCode!("")
        self.dismiss(animated: true, completion: nil)
     }
     
