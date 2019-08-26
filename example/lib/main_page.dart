@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sys_call/flutter_sys_call.dart';
-import 'package:flutter_sys_call_example/preview_video_page.dart';
+import 'preview_video_page.dart';
 import 'package:path_provider/path_provider.dart';
 
 class MainPage extends StatefulWidget {
