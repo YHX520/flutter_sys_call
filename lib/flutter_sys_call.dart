@@ -20,16 +20,8 @@ class FlutterSysCall {
 
   static Future<Map<String, String>> get doTakeVideo async {
     bool isPermission = await requestPermission(Platform.isAndroid
-        ? [
-            PermissionGroup.camera,
-            PermissionGroup.microphone,
-            PermissionGroup.storage
-          ]
-        : [
-            PermissionGroup.camera,
-            PermissionGroup.microphone,
-            PermissionGroup.photos
-          ]);
+        ? [Permission.camera, Permission.microphone, Permission.storage]
+        : [Permission.camera, Permission.microphone, Permission.photos]);
     if (isPermission) {
       String result = await _channel.invokeMethod('recordVideo');
 
@@ -58,7 +50,7 @@ class FlutterSysCall {
 
   static Future<String> get qrScan async {
     bool isPermission = await requestPermission([
-      PermissionGroup.camera,
+      Permission.camera,
     ]);
     if (isPermission) {
       final String result = await _channel.invokeMethod('QRScan');
@@ -70,11 +62,14 @@ class FlutterSysCall {
 
   ///请求权限
   static Future<bool> requestPermission(
-      List<PermissionGroup> permissionsList) async {
+      List<Permission> permissionsList) async {
     var flag = true;
-    Map<PermissionGroup, PermissionStatus> permissions =
-        await PermissionHandler().requestPermissions(permissionsList);
-    permissions.forEach((PermissionGroup pg, PermissionStatus status) {
+    Map<Permission, PermissionStatus> permissions =
+        await await [
+          Permission.storage,
+          Permission.camera
+        ].request();
+    permissions.forEach((Permission pg, PermissionStatus status) {
       if (status != PermissionStatus.granted) {
         flag = false;
       }
